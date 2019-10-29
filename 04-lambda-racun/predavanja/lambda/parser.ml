@@ -130,6 +130,31 @@ let rec exp5 chrs =
     spaces1 >>
     exp5 >>= fun e ->
     return (Syntax.RecLambda (f, x, e))
+  and match' =
+    word "MATCH" >>
+    spaces1 >>
+    exp5 >>= fun e ->
+    spaces1 >>
+    word "WITH" >>
+    spaces1 >>
+    word "[]" >>
+    spaces1 >>
+    word "->" >>
+    spaces1 >>
+    exp5 >>= fun e1 ->
+    spaces1 >>
+    word "|" >>
+    spaces1 >>
+    ident >>= fun x ->
+    spaces1 >>
+    word "::" >>
+    spaces1 >>
+    ident >>= fun xs ->
+    spaces1 >>
+    word "->" >>
+    spaces1 >>
+    exp5 >>= fun e2 ->
+    return (Syntax.Match (e, e1, x, xs, e2))
   and let_in =
     word "LET" >>
     spaces1 >>
@@ -161,7 +186,7 @@ let rec exp5 chrs =
     exp5 >>= fun e2 ->
     return (Syntax.let_rec_in (f, x, e1, e2))
   in
-  one_of [if_then_else; lambda; rec_lambda; let_in; let_rec_in; exp4] chrs
+  one_of [if_then_else; lambda; rec_lambda; match'; let_in; let_rec_in; exp4] chrs
 
 and exp4 chrs =
   one_of
@@ -175,6 +200,7 @@ and exp3 chrs =
   one_of
     [ binop exp2 "+" exp3 (fun e1 e2 -> Syntax.Plus (e1, e2))
     ; binop exp2 "-" exp2 (fun e1 e2 -> Syntax.Minus (e1, e2))
+    ; binop exp2 "::" exp2 (fun e1 e2 -> Syntax.Cons (e1, e2))
     ; exp2 ]
     chrs
 
@@ -201,6 +227,7 @@ and exp0 chrs =
     [ (integer >>= fun n -> return (Syntax.Int n))
     ; word "TRUE" >> return (Syntax.Bool true)
     ; word "FALSE" >> return (Syntax.Bool false)
+    ; word "[]" >> return (Syntax.Nil)
     ; (ident >>= fun x -> return (Syntax.Var x))
     ; parens exp5 ]
     chrs

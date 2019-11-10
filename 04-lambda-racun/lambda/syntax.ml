@@ -54,33 +54,30 @@ let rec subst sbst = function
       let sbst' = List.remove_assoc x (List.remove_assoc xs sbst) in
       Match (subst sbst e, subst sbst e1, x, xs, subst sbst' e2)
 
-let rec string_of_exp5 = function
+
+let rec string_of_exp3 = function
   | IfThenElse (e, e1, e2) ->
-      "IF " ^ string_of_exp4 e ^ " THEN " ^ string_of_exp4 e1 ^ " ELSE " ^ string_of_exp5 e2
+      "IF " ^ string_of_exp2 e ^ " THEN " ^ string_of_exp2 e1 ^ " ELSE " ^ string_of_exp3 e2
   | Lambda (x, e) ->
-      "FUN " ^ x ^ " -> " ^ string_of_exp5 e
+      "FUN " ^ x ^ " -> " ^ string_of_exp3 e
   | RecLambda (f, x, e) ->
-      "REC " ^ f ^ " " ^ x ^ " -> " ^ string_of_exp5 e
+      "REC " ^ f ^ " " ^ x ^ " -> " ^ string_of_exp3 e
   | Match (e, e1, x, xs, e2) ->
-      "MATCH " ^ string_of_exp4 e ^ " WITH [] -> " ^ string_of_exp4 e1 ^ " | " ^ x ^ "::" ^ xs ^ " -> " ^ string_of_exp5 e2
-  | e -> string_of_exp4 e
-and string_of_exp4 = function
-  | Equal (e1, e2) ->
-    string_of_exp3 e1 ^ " = " ^ string_of_exp3 e2
-  | Less (e1, e2) ->
-    string_of_exp3 e1 ^ " < " ^ string_of_exp3 e2
-  | Greater (e1, e2) ->
-    string_of_exp3 e1 ^ " > " ^ string_of_exp3 e2
-  | e -> string_of_exp3 e
-and string_of_exp3 = function
-  | Plus (e1, e2) ->
-    string_of_exp2 e1 ^ " + " ^ string_of_exp2 e2
-  | Minus (e1, e2) ->
-    string_of_exp2 e1 ^ " - " ^ string_of_exp2 e2
-  | Cons (e1, e2) ->
-    string_of_exp2 e1 ^ " :: " ^ string_of_exp2 e2
+      "MATCH " ^ string_of_exp2 e ^ " WITH [] -> " ^ string_of_exp2 e1 ^ " | " ^ x ^ "::" ^ xs ^ " -> " ^ string_of_exp3 e2
   | e -> string_of_exp2 e
 and string_of_exp2 = function
+  | Equal (e1, e2) ->
+    string_of_exp1 e1 ^ " = " ^ string_of_exp1 e2
+  | Less (e1, e2) ->
+    string_of_exp1 e1 ^ " < " ^ string_of_exp1 e2
+  | Greater (e1, e2) ->
+    string_of_exp1 e1 ^ " > " ^ string_of_exp1 e2
+  | Plus (e1, e2) ->
+    string_of_exp1 e1 ^ " + " ^ string_of_exp1 e2
+  | Minus (e1, e2) ->
+    string_of_exp1 e1 ^ " - " ^ string_of_exp1 e2
+  | Cons (e1, e2) ->
+    string_of_exp1 e1 ^ " :: " ^ string_of_exp2 e2
   | Times (e1, e2) ->
     string_of_exp1 e1 ^ " * " ^ string_of_exp1 e2
   | e -> string_of_exp1 e
@@ -95,7 +92,7 @@ and string_of_exp0 = function
   | Bool b -> if b then "TRUE" else "FALSE"
   | Var x -> x
   | Nil -> "[]"
-  | Pair (e1, e2) -> "(" ^ string_of_exp5 e1 ^ ", " ^ string_of_exp5 e2 ^ ")"
-  | e -> "(" ^ string_of_exp5 e ^ ")"
+  | Pair (e1, e2) -> "{" ^ string_of_exp2 e1 ^ ", " ^ string_of_exp2 e2 ^ "}"
+  | e -> "(" ^ string_of_exp3 e ^ ")"
 
-let string_of_exp = string_of_exp5
+let string_of_exp = string_of_exp3

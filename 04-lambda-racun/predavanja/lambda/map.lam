@@ -1,1 +1,0 @@
-(FUN xs -> (MATCH xs WITH [] -> [] | x :: xs -> (f x) :: xs)) []

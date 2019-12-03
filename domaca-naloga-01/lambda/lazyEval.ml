@@ -42,12 +42,12 @@ let rec eval_exp = function
       end
   | S.Fst e ->
       begin match eval_exp e with
-      | S.Pair (e1, _) -> e1
+      | S.Pair (e1, _) -> eval_exp e1
       | _ -> failwith "Pair expected"
       end
   | S.Snd e ->
       begin match eval_exp e with
-      | S.Pair (_, e2) -> e2
+      | S.Pair (_, e2) -> eval_exp e2
       | _ -> failwith "Pair expected"
       end
   | S.Match (e, e1, x, xs, e2) ->

@@ -3,7 +3,7 @@ module S = Syntax
 
 let rec eval_exp = function
   | S.Var x -> failwith "Expected a closed term"
-  | S.Int _ | S.Bool _ | S.Lambda _ | S.RecLambda _  | S.Nil as e -> e
+  | S.Int _ | S.Bool _ | S.Lambda _ | S.RecLambda _ | S.Nil as e -> e
   | S.Plus (e1, e2) ->
       let n1 = eval_int e1
       and n2 = eval_int e2
@@ -80,7 +80,8 @@ let rec is_value = function
   | S.IfThenElse _ | S.Apply _ | S.Fst _ | S.Snd _ | S.Match _-> false
 
 let rec step = function
-  | S.Var _ | S.Int _ | S.Bool _ | S.Lambda _ | S.RecLambda _ | S.Nil -> failwith "Expected a non-terminal expression"
+  | S.Var _ | S.Int _ | S.Bool _ | S.Lambda _ | S.RecLambda _ | S.Nil -> 
+    failwith "Expected a non-terminal expression"
   | S.Plus (S.Int n1, S.Int n2) -> S.Int (n1 + n2)
   | S.Plus (S.Int n1, e2) -> S.Plus (S.Int n1, step e2)
   | S.Plus (e1, e2) -> S.Plus (step e1, e2)

@@ -105,6 +105,8 @@ type ty =
   | IntTy
   | BoolTy
   | ArrowTy of ty * ty
+  | ProdTy of ty * ty
+  | ListTy of ty
 
 let rec subst_ty sbst = function
   | ParamTy a as t ->
@@ -114,6 +116,8 @@ let rec subst_ty sbst = function
       end
     | IntTy | BoolTy as t -> t
     | ArrowTy (t1, t2) -> ArrowTy (subst_ty sbst t1, subst_ty sbst t2)
+    | ProdTy (t1, t2) -> ProdTy (subst_ty sbst t1, subst_ty sbst t2)
+    | ListTy t -> ListTy (subst_ty sbst t)
 
 let string_of_param (Param a) =
   let max_alpha = int_of_char 'z' - int_of_char 'a' + 1 in
@@ -124,6 +128,10 @@ let string_of_param (Param a) =
 let rec string_of_ty1 = function
   | ArrowTy (t1, t2) ->
     string_of_ty0 t1 ^ " -> " ^ string_of_ty0 t2
+  | ProdTy (t1, t2) ->
+    string_of_ty0 t1 ^ " * " ^ string_of_ty0 t2
+  | ListTy t ->
+    string_of_ty0 t ^ " list"
   | t -> string_of_ty0 t
 and string_of_ty0 = function
   | ParamTy a -> string_of_param a

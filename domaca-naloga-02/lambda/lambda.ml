@@ -13,8 +13,8 @@ let main () =
     let e = Parser.parse source in
     print_endline "TIP:";
     Infer.infer e;
-    print_endline "MALI KORAKI:";
-    Eval.small_step e;
+    (* print_endline "MALI KORAKI:"; *)
+    (* Eval.small_step e; *)
     print_endline "VELIKI KORAKI:";
     Eval.big_step e
 

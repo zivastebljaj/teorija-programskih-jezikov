@@ -22,7 +22,7 @@ Vaše naloge so:
 
 Na predavanjih ste spoznali izrek o varnosti, sestavljen iz napredka in ohranitve.
 
-Dopolniti morate dokaz za vse konstrukte, ki smo jih dodali v jezik pri razširitvi s pari in seznami. V repozitoriju že imate delno dopolnjeno datoteko `varnost.lean`, pri čemer morate dopolniti morate zgolj dokaza za `preservation` in `progress`, v dokazu lem o substituciji in šibitvi lahko pustite `sorry`.
+Dopolniti morate dokaz za vse konstrukte, ki smo jih dodali v jezik pri razširitvi s pari in seznami. V repozitoriju že imate delno dopolnjeno datoteko `varnost.lean`, pri čemer morate dopolniti zgolj dokaza za `preservation` in `progress`, v dokazu lem o substituciji in šibitvi lahko pustite `sorry`.
 
 ** NALOGO LAHKO REŠITE SAMOSTOJNO ALI V DOKAZOVALNIKU LEAN **
 

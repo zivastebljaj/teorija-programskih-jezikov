@@ -63,10 +63,10 @@ Obe operaciji naj bi izračunali logično konjunkcijo Boolovih izrazov $e_1$ in 
 \naloga[\tocke{25}]
 Običajni programski jeziki omogočajo medsebojne rekurzivne definicije, na primer v OCamlu lahko definiramo:
 \begin{verbatim}
-  let rec sodo n =
-    if n = 0 then true else (not (liho (n - 1)))
-  and liho n =
-    if n = 0 then false else (not (sodo (n - 1)))
+  let rec sodo m =
+    if m = 0 then true else (not (liho (m - 1)))
+  and liho m =
+    if m = 0 then false else (not (sodo (m - 1)))
 \end{verbatim}
 
 \podnaloga
@@ -82,10 +82,10 @@ Naj bosta $s, \ell \colon \mathbb{N}_\bot \to \mathbb{B}_\bot$ preslikavi, ki za
 \begin{align*}
   s(\bot) &= \bot &
   s(0) &= \mathrm{tt} &
-  s(n) &= n (\ell(n - 1)) \\
+  s(m) &= n (\ell(m - 1)) \\
   \ell(\bot) &= \bot &
   \ell(0) &= \mathrm{ff} &
-  \ell(n) &= n (s(n - 1))
+  \ell(m) &= n (s(m - 1))
 \end{align*}
 kjer je preslikava $n \colon \mathbb{B}_\bot \to \mathbb{B}_\bot$ podana z
 \begin{align*}

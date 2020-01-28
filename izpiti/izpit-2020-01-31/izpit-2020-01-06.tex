@@ -1,0 +1,100 @@
+\documentclass[arhiv]{izpit}
+\usepackage{amssymb}
+\usepackage{fouriernc}
+
+\begin{document}
+
+\newcommand{\bnfis}{\mathrel{{:}{:}{=}}}
+\newcommand{\bnfor}{\;\mid\;}
+\newcommand{\fun}[2]{\lambda #1. #2}
+\newcommand{\conditional}[3]{\mathtt{if}\;#1\;\mathtt{then}\;#2\;\mathtt{else}\;#3}
+\newcommand{\whileloop}[2]{\mathtt{while}\;#1\;\mathtt{do}\;#2}
+\newcommand{\interleave}[2]{#1 \leftrightharpoons #2}
+\newcommand{\recfun}[3]{\mathtt{rec}\;\mathtt{fun}\;#1\;#2. #3}
+\newcommand{\boolty}{\mathtt{bool}}
+\newcommand{\funty}[2]{#1 \to #2}
+\newcommand{\tru}{\mathtt{true}}
+\newcommand{\fls}{\mathtt{false}}
+\newcommand{\tbool}{\mathtt{bool}}
+\newcommand{\tand}{\mathbin{\mathtt{and}}}
+\newcommand{\tandalso}{\mathbin{\mathtt{andalso}}}
+
+\izpit
+  {Teorija programskih jezikov: 1. izpit}{31.\ januar 2020}{
+  Čas pisanja je 180 minut. Možno je doseči 20 točk. Veliko uspeha!
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\naloga[\tocke{20}]
+V $\lambda$-računu lahko vsako naravno število $n$ predstavimo s \emph{Churchevim naravnim številom}
+\[
+  e_n = \fun{s} \fun{z} \underbrace{s (s (\cdots (s}_n \; z) \cdots))
+\]
+\podnaloga Zapišite vse korake v evalvaciji izraza $(e_2 \; 1) \; (\fun{n} 2 * n)$ \prostor
+\podnaloga Napišite funkcijo $f$, ki vsako Churchevo naravno število pretvori v običajno naravno število. Veljati mora torej $f \; e_n \leadsto^* n$. \prostor
+\podnaloga Izračunajte najbolj splošen tip izraza $e_2$. \prostor
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\naloga[\tocke{20}]
+\newcommand{\imp}{\textsc{imp}}
+\newcommand{\skp}{\mathtt{skip}}
+Operacijsko semantiko programskega jezika {\imp} smo običajno podali z velikimi koraki, torej z relacijami
+\[
+  s, e \Downarrow n, \qquad s, b \Downarrow p, \qquad s, c \Downarrow s',
+\]
+vendar bi lahko podobno storili tudi z malimi koraki
+\[
+  s, e \leadsto e', \qquad s, b \leadsto b', \qquad s, c \leadsto s', c'
+\]
+Pri tem aritmetični izrazi s koraki končajo, ko dosežejo število $n$, Booleovi izrazi takrat, ko dosežejo logično vrednost $p$, ukazi pa takrat, ko dosežejo $s, \skp$.
+
+\podnaloga Podajte pravila, ki določajo relacijo $s, c \leadsto s', c'$.
+
+\podnaloga Jezik {\imp} razširimo s prepletenim izvajanjem $\interleave{c_1}{c_2}$, ki najprej izvede en korak ukaza $c_1$, nato en korak ukaza $c_2$, nato naslednji korak ukaza $c_1$ in tako naprej. Ko prvi izmed ukazov konča z izvajanjem, preostanek drugega ukaza izvedemo do konca. Zapišite dodatna pravila, s katerimi morate razširiti operacijsko semantiko.
+\prostor[2]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\naloga[\tocke{20}]
+\newcommand{\fix}{\mathit{fix}}
+Dana naj bo domena $D$ in naj bo $\fix \colon [D \to D] \to D$ preslikava, ki vsaki zvezni preslikavi $f \colon D \to D$ priredi njeno najmanjšo fiksno točko $\fix(f) \in D$. Dokažite, da je preslikava $\fix$ zvezna.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\naloga[\tocke{20}]
+\newcommand{\norm}[1]{\mathcal{N}_{#1}}
+\newcommand{\conv}[1]{{#1 \! \downarrow}}
+Imejmo $\lambda$-račun samo z Booleovimi vrednostmi in funkcijami
+\begin{align*}
+  A &\bnfis
+  \boolty \bnfor
+  \funty{A_1}{A_2} &
+  e &\bnfis
+  x \bnfor
+  \tru \bnfor
+  \fls \bnfor
+  \conditional{e}{e_1}{e_2} \bnfor
+  \fun{x}{e} \bnfor
+  e_1 \; e_2
+\end{align*}
+ter z običajnimi pravili za neučakano operacijsko semantiko malih korakov in določanje tipov.
+Definirajmo $\conv{e} = (\exists v. e \leadsto^* v)$.
+Ker v jeziku nimamo rekurzije, za vsak program $\vdash e : A$ velja tudi $\conv{e}$, vendar preprosta indukcija žal ne zadošča za dokaz.
+
+Namesto tega za vsak tip $A$ definirajmo množico \emph{normalnih izrazov}~$\norm{A}$ kot
+\begin{align*}
+  \norm{\boolty} &=
+    \{ e \mid (\vdash e : \boolty) \land \conv{e} \} &
+  \norm{\funty{A_1}{A_2}} &=
+    \{ e \mid (\vdash e : \funty{A_1}{A_2}) \land \forall e' \in \norm{A_1}. e \; e' \in \norm{A_2} \}
+\end{align*}
+in dokaz razbijemo na dva dela\ldots
+
+\podnaloga
+Dokažite, da za vsak tip $A$ in vsak $e \in \norm{A}$ velja $\conv{e}$.
+
+\podnaloga
+Dokažite, da za vsak izraz $x_1 : A_1, \dots, x_n : A_n \vdash e : A$, vse vrednosti $v_1 \in \norm{A_1}, \dots, v_n \in \norm{A_n}$ velja tudi $e[v_1 / x_1, \dots, v_n / x_n] \in \norm{A}$. Torej, vsak izraz, ki ima tip, je normalen, če vse proste spremenljivke zamenjamo z normalnimi izrazi.
+\end{document}

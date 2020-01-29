@@ -21,7 +21,7 @@
 
 \izpit
   {Teorija programskih jezikov: 1. izpit}{31.\ januar 2020}{
-  Čas pisanja je 180 minut. Možno je doseči 20 točk. Veliko uspeha!
+  Čas pisanja je 180 minut. Doseči je možno 80 točk. Veliko uspeha!
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -31,7 +31,7 @@ V $\lambda$-računu lahko vsako naravno število $n$ predstavimo s \emph{Churche
 \[
   e_n = \fun{s} \fun{z} \underbrace{s (s (\cdots (s}_n \; z) \cdots))
 \]
-\podnaloga Zapišite vse korake v evalvaciji izraza $(e_2 \; 1) \; (\fun{n} 2 * n)$ \prostor
+\podnaloga Zapišite vse korake v evalvaciji izraza $(e_2 \; (\fun{n} 2 * n)) \; 1$ \prostor
 \podnaloga Napišite funkcijo $f$, ki vsako Churchevo naravno število pretvori v običajno naravno število. Veljati mora torej $f \; e_n \leadsto^* n$. \prostor
 \podnaloga Izračunajte najbolj splošen tip izraza $e_2$. \prostor
 
@@ -79,22 +79,26 @@ Imejmo $\lambda$-račun samo z Booleovimi vrednostmi in funkcijami
   \fun{x}{e} \bnfor
   e_1 \; e_2
 \end{align*}
-ter z običajnimi pravili za neučakano operacijsko semantiko malih korakov in določanje tipov.
-Definirajmo $\conv{e} = (\exists v. e \leadsto^* v)$.
-Ker v jeziku nimamo rekurzije, za vsak program $\vdash e : A$ velja tudi $\conv{e}$, vendar preprosta indukcija žal ne zadošča za dokaz.
+ter z običajnimi pravili za neučakano operacijsko semantiko malih korakov in določanje tipov. Ker v jeziku nimamo rekurzije, vsak program $\vdash e : A$ tudi konvergira (torej obstaja vrednost $v$, da velja $e \leadsto^* v$), vendar preprosta indukcija žal ne zadošča za dokaz.\footnote{Za čast in slavo lahko poiščete izraz $e$, ki divergira, torej da obstaja neskončno zaporedje
+$e \leadsto e_1 \leadsto e_2 \leadsto \cdots$
+}
+
 
 Namesto tega za vsak tip $A$ definirajmo množico \emph{normalnih izrazov}~$\norm{A}$ kot
+%
 \begin{align*}
   \norm{\boolty} &=
-    \{ e \mid (\vdash e : \boolty) \land \conv{e} \} &
+    \big\{ e \mid \text{$e$ konvergira} \big\} &
   \norm{\funty{A_1}{A_2}} &=
-    \{ e \mid (\vdash e : \funty{A_1}{A_2}) \land \forall e' \in \norm{A_1}. e \; e' \in \norm{A_2} \}
+    \big\{ e \mid \text{$e$ konvergira} \land (\forall e' \in \norm{A_1}. e \; e' \in \norm{A_2}) \big\}
 \end{align*}
+%
 in dokaz razbijemo na dva dela\ldots
 
 \podnaloga
-Dokažite, da za vsak tip $A$ in vsak $e \in \norm{A}$ velja $\conv{e}$.
+Dokažite, da za vsak tip $A$ iz $e \leadsto e'$ in $e' \in \norm{A}$ sledi $e \in \norm{A}$.
 
 \podnaloga
-Dokažite, da za vsak izraz $x_1 : A_1, \dots, x_n : A_n \vdash e : A$, vse vrednosti $v_1 \in \norm{A_1}, \dots, v_n \in \norm{A_n}$ velja tudi $e[v_1 / x_1, \dots, v_n / x_n] \in \norm{A}$. Torej, vsak izraz, ki ima tip, je normalen, če vse proste spremenljivke zamenjamo z normalnimi izrazi.
+Dokažite, da za vsak izraz $x_1 : A_1, \dots, x_n : A_n \vdash e : A$ in vse vrednosti $v_1 \in \norm{A_1}, \dots, v_n \in \norm{A_n}$ velja tudi $e[v_1 / x_1, \dots, v_n / x_n] \in \norm{A}$. Torej, vsak izraz, ki ima tip, je normalen, če vse proste spremenljivke zamenjamo z normalnimi izrazi.
+
 \end{document}

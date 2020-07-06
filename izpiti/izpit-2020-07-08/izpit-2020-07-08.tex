@@ -207,19 +207,19 @@ In $\lambda$-calculus extended with lists, we define:
 
 \naloga[\tocke{20}]
 
-Let $(D, \leq)$ be a domain and let $x, y \in D$. We say that \emph{$x$ is well below $y$}, written as $x \ll y$, when each chain, whose supremum exceeds $y$, exceeds $x$ after finitely many elements. In other words, if for any chain $w_0 \leq w_1 \leq w_2 \leq \cdots$ such that $y \leq \bigvee_i w_i$, there exists some $j$, such that $x \leq w_j$.
+Let $(D, \leq)$ be a domain and let $x, y \in D$. We say that \emph{$x$ is well below $y$}, written as $x \ll y$, when each chain whose supremum exceeds $y$, exceeds $x$ after finitely many elements. In other words, if for any chain $w_0 \leq w_1 \leq w_2 \leq \cdots$ such that $y \leq \bigvee_i w_i$ there exists some $j$ for which $x \leq w_j$.
 
 \podnaloga
-Prove, that $x \ll y$ implies $x \leq y$ for arbitrary $x, y \in D$.
+Prove that $x \ll y$ implies $x \leq y$ for arbitrary $x, y \in D$.
 
 \podnaloga
-Prove, that $x \ll y$ and $y \leq z$ implies $x \ll z$ for arbitrary $x, y, z \in D$.
+Prove that $x \ll y$ and $y \leq z$ implies $x \ll z$ for arbitrary $x, y, z \in D$.
 
 \podnaloga
-Prove, that $x \leq y$ and $y \ll z$ implies $x \ll z$ for arbitrary $x, y, z \in D$.
+Prove that $x \leq y$ and $y \ll z$ implies $x \ll z$ for arbitrary $x, y, z \in D$.
 
 \podnaloga
-Find an example of a domain $(D, \leq)$ and elements $x \leq y$, such that $x \ll y$ \emph{does not hold}.
+Find an example of a domain $(D, \leq)$ and elements $x \leq y$ such that $x \ll y$ \emph{does not hold}.
 
 \nadaljevanje
 
@@ -264,7 +264,7 @@ The second one is big step semantics of the form $e \Downarrow \{v_1, \dots, v_n
 
 \naloga[\tocke{20}]
 
-\emph{Polymorphic $\lambda$-calculus} or \emph{system F} is $\lambda$-calculus, extended with explicit universally quantified types and expressions for type abstraction and application. The syntax of its types, expressions and values is:
+\emph{Polymorphic $\lambda$-calculus} or \emph{system F} is $\lambda$-calculus, extended with explicit universally quantified types and expressions for type abstraction and application. The syntax of its types, expressions, and values is:
 \begin{align*}
   A &\bnfis
   \boolty \bnfor
@@ -280,7 +280,7 @@ The second one is big step semantics of the form $e \Downarrow \{v_1, \dots, v_n
   \cdots \bnfor
   \Fun{\alpha}{e}
 \end{align*}
-while the additional rules for operational semantics and typing judgements are:
+The additional rules for operational semantics and typing judgements are:
 \[
 \frac{
   e \leadsto e'
@@ -306,7 +306,7 @@ while the additional rules for operational semantics and typing judgements are:
   \Gamma \vdash e \, B : A[B / \alpha]
 }
 \]
-where the context $\Gamma$ may contain both free variables of the form $x : A$ and free type variables $\alpha$. In addition, we require that in each $\Gamma \vdash e : A$ all free type variables $\alpha$ in the expression~$e$ or type~$A$ appear in $\Gamma$.
+where the context $\Gamma$ may contain both free variables of the form $x : A$ and free type variables $\alpha$. We additionally require that in each $\Gamma \vdash e : A$ all free type variables $\alpha$ in the expression~$e$ or type~$A$ appear in $\Gamma$.
 
 Prove progress and preservation theorems for polymorphic $\lambda$-calculus.
 

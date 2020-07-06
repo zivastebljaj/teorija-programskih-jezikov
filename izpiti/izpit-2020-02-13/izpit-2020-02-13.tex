@@ -1,0 +1,177 @@
+\documentclass[arhiv]{izpit}
+\usepackage{amssymb}
+\usepackage{fouriernc}
+
+\begin{document}
+
+\newcommand{\bnfis}{\mathrel{{:}{:}{=}}}
+\newcommand{\bnfor}{\;\mid\;}
+\newcommand{\fun}[2]{\lambda #1. #2}
+\newcommand{\conditional}[3]{\mathtt{if}\;#1\;\mathtt{then}\;#2\;\mathtt{else}\;#3}
+\newcommand{\whileloop}[2]{\mathtt{while}\;#1\;\mathtt{do}\;#2}
+\newcommand{\recfun}[3]{\mathtt{rec}\;\mathtt{fun}\;#1\;#2. #3}
+\newcommand{\boolty}{\mathtt{bool}}
+\newcommand{\intty}{\mathtt{int}}
+\newcommand{\funty}[2]{#1 \to #2}
+\newcommand{\tru}{\mathtt{true}}
+\newcommand{\fls}{\mathtt{false}}
+\newcommand{\tbool}{\mathtt{bool}}
+\newcommand{\tand}{\mathbin{\mathtt{and}}}
+\newcommand{\tandalso}{\mathbin{\mathtt{andalso}}}
+\newcommand{\imp}{\textsc{imp}}
+\newcommand{\skp}{\mathtt{skip}}
+\newcommand{\nadaljevanje}{\dodatek{\newpage\noindent\emph{(nadaljevanje rešitve \arabic{naloga}. naloge)}}}
+\izpit
+  [ucilnica=P02,naloge=-1]{Teorija programskih jezikov: 2. izpit}{13.\ februar 2020}{
+}
+\dodatek{
+  \vspace{\stretch{1}}
+  \begin{itemize}
+    \item \textbf{Ne odpirajte} te pole, dokler ne dobite dovoljenja.
+    \item Zgoraj \textbf{vpišite svoje podatke} in označite \textbf{sedež}.
+    \item Na vidno mesto položite \textbf{dokument s sliko}.
+    \item Preverite, da imate \textbf{telefon izklopljen} in spravljen.
+    \item Čas pisanja je \textbf{180 minut}.
+    \item Doseči je možno \textbf{80 točk}.
+    \item Veliko uspeha!
+  \end{itemize}
+  \vspace{\stretch{3}}
+  \newpage
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\naloga[\tocke{20}]
+V $\lambda$-računu definirajmo funkcijo višjega reda, ki predstavlja komponiranje funkcij:
+\[
+  \mathit{cmp} = \fun{f}{\Big(\fun{g}{\big(\fun{x}{f (g x)}\big)}\Big)}
+\]
+\podnaloga Zapišite drevo izpeljave za $\Big(\big(\mathit{cmp} \, (\fun{m} 7 * m)\big) \, (\fun{n} 3 * n)\Big) \, 2 \Downarrow 42$.
+\podnaloga Zapišite vse korake v evalvaciji izraza $\Big(\big(\mathit{cmp} \, (\fun{m} 7 * m)\big) \, (\fun{n} 3 * n)\Big) \, 2$ v semantiki malih korakov.
+\podnaloga Izračunajte najbolj splošen tip izraza $\mathit{cmp}$.
+\nadaljevanje
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\naloga[\tocke{20}]
+
+\newcommand{\printint}[2]{\mathtt{print}_{#1}(#2)}
+V $\lambda$-račun dodamo izraz za izpisovanje celih števil:
+\[
+  e \bnfis
+  x \bnfor
+  \tru \bnfor
+  \fls \bnfor
+  \conditional{e}{e_1}{e_2} \bnfor
+  \fun{x}{e} \bnfor
+  e_1 \; e_2 \bnfor
+  \printint{e}{e'}
+\]
+Izraz $\printint{e}{e'}$ izpiše celo število, predstavljeno z izrazom $e$, in nadaljuje z izvajanjem izraza $e'$. Na primer, izraz $e_{42} = \printint{2 + 2}{\printint{1 + 1}{\tru}}$ najprej izpiše $4$, nato $2$ in vrne vrednost $\tru$.
+
+\podnaloga
+  Zapišite pravilo za določanje tipa izraza $\printint{e}{e'}$.
+
+\podnaloga
+  Za razširjeni $\lambda$-račun zapišite pravila za semantiko velikih korakov oblike $e \Downarrow v, [n_1, \dots, n_k]$, ki poleg končne vrednosti $v$ vrne tudi seznam izpisanih števil. Na primer, zgornji izraz bi se evalviral kot $e_{42} \Downarrow \tru, [4, 2]$.
+
+\nadaljevanje
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\naloga[\tocke{20}]
+\newcommand{\error}{\mathtt{err}}
+\newcommand{\handle}[2]{\mathtt{handle}\;#1\;\mathtt{with}\;#2}
+V $\lambda$-račun dodamo eno izjemo in njeno prestrezanje s sledečo sintakso:
+\begin{align*}
+  e &\bnfis
+  x \bnfor
+  \tru \bnfor
+  \fls \bnfor
+  \conditional{e}{e_1}{e_2} \bnfor
+  \fun{x}{e} \bnfor
+  e_1 \; e_2 \bnfor
+  \error \bnfor
+  \handle{e_1}{e_2} \\
+  v &\bnfis
+  \tru \bnfor
+  \fls \bnfor
+  \fun{x}{e} \bnfor
+  \error
+\end{align*}
+s sledečima dodatnima praviloma za določanje tipov:
+\[
+\frac{
+  \hbox{}
+}{
+  \Gamma \vdash \error : A
+}
+\qquad
+\frac{
+  \Gamma \vdash e_1 : A
+  \qquad
+  \Gamma \vdash e_2 : A
+}{
+  \Gamma \vdash \handle{e_1}{e_2} : A
+}
+\]
+ter s sledečimi dodatnimi pravili za operacijsko semantiko:
+\[
+\frac{
+  \hbox{}
+}{
+  \conditional{\error}{e_1}{e_2} \leadsto \error
+}
+\qquad
+\frac{
+  \hbox{}
+}{
+  \error \, e_2 \leadsto \error
+}
+\qquad
+\frac{
+  \hbox{}
+}{
+  v_1 \, \error \leadsto \error
+}
+\]
+\[
+\frac{
+  e_1 \leadsto e_1'
+}{
+  \handle{e_1}{e_2} \leadsto \handle{e_1'}{e_2}
+}
+\qquad
+\frac{
+}{
+  \handle{\error}{e_2} \leadsto e_2
+}
+\qquad
+\frac{
+  v_1 \neq \error
+}{
+  \handle{v_1}{e_2} \leadsto v_1
+}
+\]
+Dokažite izrek o varnosti za zgornjo razširitev. Pri tem je dovolj, da v dokazu naštejete le spremembe glede na dokaz s predavanj.
+
+\nadaljevanje
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\naloga[\tocke{20}]
+\newcommand{\sub}{\sqsubseteq}
+\newcommand{\pow}[1]{\mathcal{P}(#1)}
+\newcommand{\powd}[1]{\mathcal{P}_{\downarrow}(#1)}
+\newcommand{\down}[1]{\mathop{\downarrow} #1}
+Za denotacijsko semantiko nedeterminističnih programov uporabljamo potenčne množice. Za domeno $(D, \leq)$ in množici $X, Y \subseteq D$ definiramo
+\[
+  X \sub Y \iff \forall x \in X. \exists y \in Y. x \leq y
+  \qquad\text{in}\qquad
+  \down{X} = \{ x' \in D \mid \exists x \in X. x' \leq x \}
+\]
+ter za množico $X$ pravimo, da je \emph{navzdol zaprta}, če velja $X = \down{X}$. Naj bo $\powd{D}$ množica vseh podmnožic $D$, ki so (1) neprazne, (2) navzdol zaprte in (3) zaprte za supremume naraščajočih verig.
+
+\podnaloga Dokažite, da je $(\powd{D}, \sub)$ domena. Namig: supremum verige $X_1 \sub X_2 \sub \cdots$ je enak $\overline{\bigcup_i X_i}$ (to morate dokazati), kjer $\overline{X}$ označuje množico $X$, razširjeno s supremumi vseh naraščajočih verig v~$X$.
+\podnaloga Dokažite, da je preslikava $\eta : D \to \powd{D}$, ki vsakemu elementu $x \in D$ priredi $\down{\{ x \}}$, dobro definirana in zvezna.
+
+\nadaljevanje
+
+\end{document}

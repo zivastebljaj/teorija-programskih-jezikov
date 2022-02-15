@@ -119,8 +119,11 @@ let rec cmd chrs =
     atomic_cmd >>= fun c1 ->
     spaces >> word ";" >> spaces >> cmd >>= fun c2 ->
     return (Syntax.Seq (c1, c2))
+  and print_int =
+    word "print" >> spaces1 >> exp >>= fun e ->
+    return (Syntax.PrintInt e)
   in
-  one_of [ if_then_else; while_do; seq; atomic_cmd ] chrs
+  one_of [ if_then_else; while_do; seq; print_int; atomic_cmd ] chrs
 
 and atomic_cmd chrs =
   let assign =

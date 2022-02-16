@@ -11,4 +11,5 @@ let () =
     let filename = Sys.argv.(1) in
     let source = read_source filename in
     let cmd = Parser.parse source in
-    Interpreter.run cmd
+    if Checker.check cmd then Interpreter.run cmd
+    else failwith "Not all locations are set!"

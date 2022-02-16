@@ -12,7 +12,9 @@ let eval_bool st = function
   | Greater (e1, e2) -> eval_exp st e1 > eval_exp st e2
 
 let rec eval_cmd st = function
-  | Syntax.Assign (l, e) -> (l, eval_exp st e) :: st
+  | Syntax.Assign (l, e) ->
+      (* Da se lokacija l v stanju st ne bi pojavila več kot enkrat, jo preventivno pobrišemo  *)
+      (l, eval_exp st e) :: List.remove_assoc l st
   | IfThenElse (b, c1, c2) ->
       if eval_bool st b then eval_cmd st c1 else eval_cmd st c2
   | Seq (c1, c2) ->

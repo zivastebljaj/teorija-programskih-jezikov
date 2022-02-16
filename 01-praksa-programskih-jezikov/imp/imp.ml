@@ -5,7 +5,10 @@ let read_source filename =
   source
 
 let () =
-  let source = read_source "test.imp" in
-  let cmd = Parser.parse source in
-  let _res = Interpreter.eval_cmd [] cmd in
-  print_endline "Uspelo mi je!"
+  if Array.length Sys.argv <> 2 then
+    failwith ("Run IMP as '" ^ Sys.argv.(0) ^ " <filename>.imp'")
+  else
+    let filename = Sys.argv.(1) in
+    let source = read_source filename in
+    let cmd = Parser.parse source in
+    Interpreter.run cmd

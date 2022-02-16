@@ -21,8 +21,22 @@ let rec eval_cmd st = function
   | Skip -> st
   | WhileDo (b, c) ->
       (* eval_cmd st (IfThenElse (b, Seq (c, WhileDo (b, c)), Skip)) *)
-      if eval_bool st b then eval_cmd st (WhileDo (b, c)) else st
+      if eval_bool st b then
+        let st' = eval_cmd st c in
+        eval_cmd st' (WhileDo (b, c))
+      else st
   | PrintInt e ->
       print_int (eval_exp st e);
       print_newline ();
       st
+
+let print_state st =
+  print_endline "[";
+  st
+  |> List.sort_uniq (fun (Syntax.Location l, _) (Syntax.Location l', _) ->
+         compare l l')
+  |> List.iter (fun (Syntax.Location l, n) ->
+         print_endline ("  #" ^ l ^ " := " ^ string_of_int n));
+  print_endline "]"
+
+let run cmd = eval_cmd [] cmd |> print_state

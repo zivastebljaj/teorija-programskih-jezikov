@@ -6,23 +6,29 @@ type 'value parser = char list -> ('value * char list) option
 
 (* BASIC PARSERS *)
 
-let fail _ = None
+let fail : 'a parser = fun _chrs -> None
 
-let return v chrs = Some (v, chrs)
+let return v : 'a parser = fun chrs -> Some (v, chrs)
 
-let character = function [] -> None | chr :: chrs -> Some (chr, chrs)
+let character : char parser = function
+  | [] -> None
+  | chr :: chrs -> Some (chr, chrs)
 
-let ( || ) parser1 parser2 chrs =
+let ( || ) (parser1 : 'a parser) (parser2 : 'a parser) : 'a parser =
+ fun chrs ->
   match parser1 chrs with
   | None -> parser2 chrs
   | Some (v, chrs') -> Some (v, chrs')
 
-let ( >>= ) parser1 parser2 chrs =
+let ( >>= ) (parser1 : 'a parser) (parser2 : 'a -> 'b parser) : 'b parser =
+ fun chrs ->
   match parser1 chrs with None -> None | Some (v, chrs') -> parser2 v chrs'
 
 (* DERIVED PARSERS *)
 
 let ( >> ) parser1 parser2 = parser1 >>= fun _ -> parser2
+
+let map f parser = parser >>= fun v -> return (f v)
 
 let satisfy cond parser =
   let cond_parser v = if cond v then return v else fail in
@@ -54,8 +60,7 @@ and many1 parser =
   parser >>= fun v ->
   many parser >>= fun vs -> return (v :: vs)
 
-let integer =
-  many1 digit >>= fun digits -> return (int_of_string (implode digits))
+let integer = many1 digit |> map (fun chrs -> int_of_string (implode chrs))
 
 let ident =
   alpha >>= fun chr ->
@@ -66,7 +71,7 @@ let spaces = many space >> return ()
 let spaces1 = many1 space >> return ()
 
 let parens parser =
-  word "(" >> spaces >> parser >>= fun p -> spaces >> word ")" >> return p
+  exactly '(' >> spaces >> parser >>= fun v -> spaces >> exactly ')' >> return v
 
 let binop parser op f =
   parser >>= fun v1 ->
@@ -119,19 +124,19 @@ let rec cmd chrs =
     atomic_cmd >>= fun c1 ->
     spaces >> word ";" >> spaces >> cmd >>= fun c2 ->
     return (Syntax.Seq (c1, c2))
-  and print_int =
-    word "print" >> spaces1 >> exp >>= fun e ->
-    return (Syntax.PrintInt e)
   in
-  one_of [ if_then_else; while_do; seq; print_int; atomic_cmd ] chrs
+  one_of [ if_then_else; while_do; seq; atomic_cmd ] chrs
 
 and atomic_cmd chrs =
   let assign =
     location >>= fun l ->
     spaces >> word ":=" >> spaces >> exp >>= fun e ->
     return (Syntax.Assign (l, e))
-  and skip = word "skip" >> return Syntax.Skip in
-  one_of [ assign; skip; parens cmd ] chrs
+  and skip = word "skip" >> return Syntax.Skip
+  and print_int =
+    word "print" >> spaces1 >> exp >>= fun e -> return (Syntax.PrintInt e)
+  in
+  one_of [ assign; skip; print_int; parens cmd ] chrs
 
 let parse str =
   match str |> String.trim |> explode |> cmd with

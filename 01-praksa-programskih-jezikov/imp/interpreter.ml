@@ -1,3 +1,7 @@
+(* Da se lokacija l v stanju st ne bi pojavila več kot enkrat, jo preventivno pobrišemo  *)
+
+let update_loc k v st = (k, v) :: List.remove_assoc k st
+
 let rec eval_exp st = function
   | Syntax.Lookup l -> List.assoc l st
   | Int n -> n
@@ -12,9 +16,7 @@ let eval_bool st = function
   | Greater (e1, e2) -> eval_exp st e1 > eval_exp st e2
 
 let rec eval_cmd st = function
-  | Syntax.Assign (l, e) ->
-      (* Da se lokacija l v stanju st ne bi pojavila več kot enkrat, jo preventivno pobrišemo  *)
-      (l, eval_exp st e) :: List.remove_assoc l st
+  | Syntax.Assign (l, e) -> update_loc l (eval_exp st e) st
   | IfThenElse (b, c1, c2) ->
       if eval_bool st b then eval_cmd st c1 else eval_cmd st c2
   | Seq (c1, c2) ->

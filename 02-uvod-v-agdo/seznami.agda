@@ -36,3 +36,9 @@ x ∷ xs ++ ys = x ∷ (xs ++ ys)
 map : {A B : Set} → (A → B) → 𝕊 A → 𝕊 B
 map f [] = []
 map f (x ∷ xs) = map f xs
+
+infix 10 _∈_
+
+data _∈_ {A : Set} : A → 𝕊 A → Set where
+    here : {x : A} {xs : 𝕊 A} → x ∈ x ∷ xs
+    there : {x y : A} {xs : 𝕊 A} → x ∈ xs → x ∈ y ∷ xs

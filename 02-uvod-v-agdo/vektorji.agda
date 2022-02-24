@@ -8,8 +8,11 @@ data Vec : Set → ℕ → Set where
 
 _++_ : {A : Set} {m n : ℕ} → Vec A m → Vec A n → Vec A (m + n)
 [] ++ ys = ys
-(x ∷ xs) ++ ys = x ∷ ({!   !} ++ ys)
+(x ∷ xs) ++ ys = x ∷ (xs ++ ys)
 
 map : {A B : Set} {m : ℕ} → (A → B) → Vec A m → Vec B m
 map f [] = []
 map f (x ∷ xs) = f x ∷ map f xs
+
+hd : {A : Set} {m : ℕ} → Vec A (S m) → A
+hd (x ∷ _) = x

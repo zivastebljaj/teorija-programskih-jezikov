@@ -1,64 +1,58 @@
 # NAVODILA ZA PRVO DOMAČO NALOGO
 
-Naloga obsega dve razširitvi jezika Lambda, ki ste ga spoznali med predavanji.
+NALOGO MORATE REŠEVATI SAMOSTOJNO. ČE NE VESTE, ALI DOLOČENA STVAR POMENI SODELOVANJE, RAJE VPRAŠAJTE!
 
-Za oddajo naloge si podvojite repozitorij (*fork*) na vaš uporabniški račun. Razširitve jezika in dodatne datoteke nato dodajte na vaš repozitorij (prav tako na vejo `domaca-naloga-01`), na spletni učilnici pa oddatje zgolj povezavo do vašega repozitorija.
+Naloga obsega implementacijo tolmača za jezik `imp` v Agdi.
 
-Cilj domače naloge so izključno razširitve jezike, zato pri karkšnihkoli problemih z izgradnjo jezika Lambda pošljite e-mail, da problem čimprej rešimo.
+Za oddajo naloge si podvojite repozitorij (*fork*) na vaš uporabniški račun.
+Razširitve jezika in dodatne datoteke nato dodajte na vaš repozitorij (prav tako na vejo `domaca-naloga-01`), na spletni učilnici pa oddatje zgolj povezavo do vašega repozitorija.
+Vse potrebne datoteke se nahajajo v mapi `domaca-naloga-01`, kjer tudi rešujte domačo nalogo, datotek izven te mape ne spreminjajte.
 
-### Linux & Mac
+## JEZIK IMP
 
-Za izgradnjo jezika v konzoli pojdite do mape `domaca-naloga-01/lambda` in v njej poženite `ocamlbuild lambda.native`.
+Na predavanjih in vajah smo na kratko pogledali jezik `imp` in pripravili delno implementacijo tolmača.
+Vaša naloga je dokončati obstoječ tolmač in ga razširiti z dodatnimi konstrukti.
 
-Prevajalnik vam bo zgradil datoteko `lambda.native`, ki jo uporabljate kot 
+Pri pisanju tolmača uporabljajte tipe in module, ki smo jih napisali na predavanjih in vajah (`boole.agda`, `seznami.agda`, `naravna.agda`, `par.agda`, `vektorji.agda`, `fin.agda`), nekatere od njih bo celo potrebno razširiti.
 
-```./lambda.native eager ime_datoteke.lam```
+Okolje v jeziku `imp` predstavimo z vektorjem dolžine `n`, kjer se na spremenljivke sklicujemo kar z lokacijo v vektorju tipa `Fin n`.
+Da je implementacija lažja in se izognemo dokazovanju predpostavimo, da ima začetno okolje že predefinirane neke (smiselne) vrednosti vseh spremenljivk, ki jih bomo potrebovali.
+Prav tako za lažje pisanje tolmača eksplicitno "povečamo" tip spremenljivk v sami sintaksi jezika s pomočjo funkcij `#_⇑_` in `_↑_`.  
 
-(za leno izvajanje `eager` zamenjajte z `lazy`).
+### Popravki tolmača
 
-### Windows
+V mapi `agda.imp` se nahaja delno dokončana implementacija tolmača, ki je polna lukenj.
+Vaša naloga je zapolniti lunkje na smiselen način, da se bo tolmač uspešno prevedel in bo pravilno izvedel ukaz v programskem jeziku `imp`.
+Za pomoč je nekaj primer ukaza že pripravljen, priporočamo pa, da si za testiranje pripravite še nekaj novih.
+Pomožne funkcije, ki jih boste potrebovali za razširitev tolmača dodajte v smiselne datoteke in jih priložite domači nalogi.
 
-Če ste OCaml namestili preko povezave na spletni učilnici, je uporaba rahlo bolj zapletena. Repozitorij vsebuje datoteko `tasks.json`, v kateri so definirani VSCode taski `Compile Lambda` in `Lambda Eager/Lazy`. Poženete jih tako, da odprete VSCode meni (`ctrl+shift+p`), izberete možnost `Run Task` in izberete želen task.
+### Razširitev tolmača
 
-**Če ne želite uporabljati VSCode imate v `tasks.json` hiter komentar ukazov, ki jih lahko nato prilagodite po svoje.**
+Obstoječ jezik razširite z novimi konstrukti:
 
-VSCode taske zazna zgolj če se mapa `.vscode` nahaja na zgornjem nivoju (torej da imate v VSCode odprto zgolj mapo repozitorija (ukaz `Open Folder` v VSCode meniju)).
+- Artimetični izrazi naj dodatno podpirajo potenciranje `_**_`
+- Booleovi izrazi naj podpirajo logična IN in ALI `_&&_, _||_`
+- V jezik dodajte ukaz `PrintInt_`, ki izpiše vrednost aritmetičnega izraza.
 
-Preden bodo taski delovali, jih morate nastaviti na vaš sistem.
+    Izpis celih števil bomo modelirali tako, da bo izvajanje ukazov namesto okolja vrnilo par okolja in seznama izpisanih števil. Kot argument še vedno dobi samo okolje, saj v seznam izpisa zgolj dodajamo. Pri tem si lahko pomagate s tipom `Pair`, ki smo ga definirali na vajah.
 
-Vse pojavitve `???` zamenjajte z imenom vašega računalnika (npr. `ZigaPC`)
-in vse pojavitve `!!!` zamenjajte z inštalirano verzijo OCamla (npr. `4.09.0+mingw64c`).
+### Sporočanje napak
 
-Najprej v raziskovalcu preverite, da sta poti
-- `C:\\OCaml64\\usr\\local\\bin\\` 
-- `C:\\OCaml64\\home\\???\\.opam\\!!!\\bin\\` 
+Ko trenutna implementacija konča z izvajanjem nimamo podatka, ali smo porabili preveč korakov, ali je tolmač uspešno končal z izvajanjem.
+Popravite implementacijo tolmača, ki bo namesto okolja in izpisani števil vrnila tip, ki signalizira na kakšen način se je izvajanje končalo.
+V priloženi datoteki je v komentarju dodan tip, s katerim si lahko pomagate.
+Če tekom izvajanja zmanjka goriva je rezultat izvajanja `outOfGas`, druga komponenta pa nam ne glede na način končanja pove, katera števila smo izpisali preden je zmanjkalo goriva.
 
-veljavni (morda boste morali spremeniti pot na 32-bitno različico glede na vašo namestitev).
+### For zanka
 
-Task `Compile Lambda` bi moral delovati kjerkoli iz mape, `Lambda Eager` pa vam v lambdi zažene trenutno odprto datoteko.
+V jezik dodajte nov ukaz `FOR_:=_TO_DO_DONE`, ki se obnaša na enak način kot for zanka v jeziku `OCaml`.
+Že podan primer ukaza zapišite s for zanko in preverite, da je rezultat enak.
+Za lažjo implementacijo predpostavite, da je spremenljivka po kateri iteriramo že definirana v okolju.
 
-**Kadar vam Lambda javi napako `End_of_file`, morate spremeniti 'end of line sequence'**. To lahko storite v VSCode meniju (ukaz `Change End of Line Sequence`) ali pa v spodnjem desnem kotu okna, kjer je izbrana opcija `CRLF`, ki jo spremenite na `LF`.
+--------------------------------------------------------------------------------
 
-## RAZŠIRITEV S PARI IN SEZNAMI
+NALOGO MORATE REŠEVATI SAMOSTOJNO. ČE NE VESTE, ALI DOLOČENA STVAR POMENI SODELOVANJE, RAJE VPRAŠAJTE!
 
-Jezik Lambda smo na vajah idejno že razširili s pari in seznami. Tako pari kot seznami so že dodani v parser in sintakso jezika. 
+Dovoljno je brskanje in uporaba idej iz standardne knjižnjice Agde, obstoječe kode na internetu, zapiskov s predavanj, vaj, pogovor s sošolci o idejah reševanja in težavah.
 
-Dodan je konstruktor za pare `{e1, e2} ~ Pair (e1, e2)`, prazen seznam `[] ~ Nil` in konstruiran seznam `e :: es ~ Cons (e, es)` (seznam več elementov se mora končati s praznim seznamom, torej `1::2::3::[]`). Prav tako sta dodani projekciji na komponente `FST e ~ Fst e` in `SND e ~ Snd e` in pa `MATCH e WITH | [] -> e1 | x :: xs -> e2 ~ Match (e, e1, x, xs, e2)`. 
-
-Vaša naloga je:
-1. V `syntax.ml` dopolnite substitucijo za nove konstrukte.
-2. Dopolnite evaluator `eval.ml` za nove konstrukte. Pomembno je, da pravilno deluje za smiselne programe (torej ne rabite skrbeti kaj se zgodi s programom `FST 1`).
-3. V datoteko `map.lam` napišite funkcijo `map` in jo uporabite na primeru.
-4. V datoteko `split.lam` napišite funkicjo `split` in jo uporabite na primeru.
-
-(opis funkcij `map` in `split` lahko poiščete v Ocaml Documentaciji https://caml.inria.fr/pub/docs/manual-ocaml/libref/List.html) 
-
-## RAZŠIRITEV Z LENIM IZVAJANJEM
-
-Jeziku Lambda (z dodanimi pari in seznami) dodajte leno izvajanje. V datoteki `lazyEval.ml` se nahaja kopija `eval.ml`, ki se uporabi kadar lambdo pokličemo z besedo `lazy`.
-
-Vaša naloga je:
-1. Popravite izvajanje funkcij na leno izvajanje.
-2. Dodajte leno izvajanje za pare in sezname.
-3. V datoteko `lazy_good.lam` napišite program, ki se z lenim izvajanjem izvede mnogo hitreje. Nato v datoteko `lazy_bad.lam` napišite program, ki se z lenim izvajanjem izvede mnogo počasneje.
-4. **Dodatni izziv:** V datoteko `substitution_broken.lam` napišite primer, kjer trenutna substitucija jezika Lambda naredi napako. Substitucijo nato popravite.
+Strogo prepovedano je med drugim deljenje kode in rešitev, ki se dotikajo te specifične domače naloge, tako med sošolci, kot prek interneta in direktno spraševanje za pomoč o podanih nalogah.

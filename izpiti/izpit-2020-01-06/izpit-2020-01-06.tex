@@ -1,0 +1,104 @@
+\documentclass[arhiv]{izpit}
+\usepackage{fouriernc}
+
+\begin{document}
+
+\newcommand{\bnfis}{\mathrel{{:}{:}{=}}}
+\newcommand{\bnfor}{\;\mid\;}
+\newcommand{\fun}[2]{\lambda #1. #2}
+\newcommand{\conditional}[3]{\mathtt{if}\;#1\;\mathtt{then}\;#2\;\mathtt{else}\;#3}
+\newcommand{\recfun}[3]{\mathtt{rec}\;\mathtt{fun}\;#1\;#2. #3}
+\newcommand{\tru}{\mathtt{true}}
+\newcommand{\fls}{\mathtt{false}}
+\newcommand{\tbool}{\mathtt{bool}}
+\newcommand{\tand}{\mathbin{\mathtt{and}}}
+\newcommand{\tandalso}{\mathbin{\mathtt{andalso}}}
+
+\izpit
+  {Teorija programskih jezikov: poskusni izpit}{6.\ januar 2020}{
+  Čas pisanja je 150 minut. Možno je doseči 100 točk. Veliko uspeha!
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\naloga[\tocke{25}]
+Za vsakega od naslednjih izrazov ugotovite, ali ima tip in katerega. Nato ugotovite še, ali v operacijski semantiki malih korakov program divergira, se evalvira v vrednost, ali zatakne. Če se evalvira v vrednost, v katero?
+\podnaloga $\conditional{(\conditional{\fls}{\fls}{\tru})}{\fls}{\tru}$ \prostor
+\podnaloga $(\conditional{0=1}{\fls}{14}) * 3$ \prostor
+\podnaloga $(\fun{g}{g \, \fls}) \, (\fun{x}{x + 1})$ \prostor
+\podnaloga $\fun{b}{\conditional{b}{0}{1}}$ \prostor
+\podnaloga $(\recfun{f}{b}{\conditional{f \, b}{42}{42}}) \, \fls$ \prostor
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%
+
+\naloga[\tocke{25}]
+Definirajmo izraz:
+\[
+  e = \fun{f}{\fun{g}{\fun{x}{f(g(f x))}}}
+\]
+\podnaloga Poiščite tip $A$ in sistem enačb $\mathcal{E}$, tako da velja $\emptyset \vdash e : A | \mathcal{E}$ ter zapišite ustrezno drevo izpeljave.
+\prostor[3]
+\podnaloga Poiščite najbolj splošno rešitev sistema $\mathcal{E}$, torej substitucijo $\sigma$, za katero velja $\mathcal{E} \searrow \sigma$.\prostor
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\naloga[\tocke{25}]
+V $\lambda$-račun dodamo operaciji:
+\[
+  e \bnfis \cdots \bnfor
+  e_1 \tand e_2 \bnfor
+  e_1 \tandalso e_2
+\]
+Obe operaciji naj bi izračunali logično konjunkcijo Boolovih izrazov $e_1$ in $e_2$, razlika je le v tem, da $\mathtt{and}$ evaluira~$e_2$ samo po potrebi, če iz~$e_1$ ni razviden rezultat, medtem ko $\mathtt{andalso}$ vedno evaluira oba~$e_1$ in~$e_2$.
+
+\podnaloga Zapišite pravila za operacijsko semantiko in določanje tipov za $\mathtt{and}$ in $\mathtt{andalso}$.\prostor[2]
+\podnaloga Podajte primer izrazov~$e_1$ in~$e_2$ tipa $\tbool$,
+  iz katerih je opazna razlika med $e_1 \tand e_2$ in $e_1 \tandalso e_2$.\prostor
+\podnaloga Dokažite, da za razširjeni jezik še vedno velja izrek o varnosti.\prostor[2]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\naloga[\tocke{25}]
+Običajni programski jeziki omogočajo medsebojne rekurzivne definicije, na primer v OCamlu lahko definiramo:
+\begin{verbatim}
+  let rec sodo m =
+    if m = 0 then true else (not (liho (m - 1)))
+  and liho m =
+    if m = 0 then false else (not (sodo (m - 1)))
+\end{verbatim}
+
+\podnaloga
+S pomočjo običajnega izreka o negibnih točkah zveznih preslikav na domenah dokažite, da za poljubni domeni $D$ in $E$ ter zvezni funkciji $f \colon D \times E \to D$ in $g \colon D \times E \to E$ obstajata fiksni točki $x \in D$ in $y \in E$, da velja:
+\begin{align*}
+  x &= f(x, y) &
+  y &= g(x, y)
+\end{align*}
+\prostor
+
+\podnaloga
+Naj bosta $s, \ell \colon \mathbb{N}_\bot \to \mathbb{B}_\bot$ preslikavi, ki zadoščata rekurzivnim enačbam:
+\begin{align*}
+  s(\bot) &= \bot &
+  s(0) &= \mathrm{tt} &
+  s(m) &= n (\ell(m - 1)) \\
+  \ell(\bot) &= \bot &
+  \ell(0) &= \mathrm{ff} &
+  \ell(m) &= n (s(m - 1))
+\end{align*}
+kjer je preslikava $n \colon \mathbb{B}_\bot \to \mathbb{B}_\bot$ podana z
+\begin{align*}
+  n(\bot) &= \bot &
+  n(\mathrm{tt}) &= \mathrm{ff} &
+  n(\mathrm{ff}) &= \mathrm{tt}
+\end{align*}
+Poiščite domeni $D$ in $E$ ter zvezni funkciji $\Phi \colon D \times E \to D$ in $\Psi \colon D \times E \to E$, tako da velja
+\begin{align*}
+  s &= \Phi(s, \ell) &
+  \ell &= \Psi(s, \ell)
+\end{align*}
+Tega, da sta $D$ in $E$ domeni ter $\Phi$ in $\Psi$ zvezni, vam ni treba dokazovati.
+\prostor
+
+\end{document}

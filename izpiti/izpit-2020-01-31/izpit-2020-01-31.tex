@@ -1,0 +1,232 @@
+\documentclass[arhiv]{../izpit}
+\usepackage{amssymb}
+\usepackage{fouriernc}
+
+\begin{document}
+
+\newcommand{\bnfis}{\mathrel{{:}{:}{=}}}
+\newcommand{\bnfor}{\;\mid\;}
+\newcommand{\fun}[2]{\lambda #1. #2}
+\newcommand{\conditional}[3]{\mathtt{if}\;#1\;\mathtt{then}\;#2\;\mathtt{else}\;#3}
+\newcommand{\whileloop}[2]{\mathtt{while}\;#1\;\mathtt{do}\;#2}
+\newcommand{\recfun}[3]{\mathtt{rec}\;\mathtt{fun}\;#1\;#2. #3}
+\newcommand{\boolty}{\mathtt{bool}}
+\newcommand{\funty}[2]{#1 \to #2}
+\newcommand{\tru}{\mathtt{true}}
+\newcommand{\fls}{\mathtt{false}}
+\newcommand{\tbool}{\mathtt{bool}}
+\newcommand{\tand}{\mathbin{\mathtt{and}}}
+\newcommand{\tandalso}{\mathbin{\mathtt{andalso}}}
+\newcommand{\imp}{\textsc{imp}}
+\newcommand{\skp}{\mathtt{skip}}
+\newcommand{\nadaljevanje}{\dodatek{\newpage\noindent\emph{(nadaljevanje rešitve \arabic{naloga}. naloge)}}}
+\izpit
+  [ucilnica=P02]{Teorija programskih jezikov: 1. izpit}{31.\ januar 2020}{
+}
+\dodatek{
+  \vspace{\stretch{1}}
+  \begin{itemize}
+    \item \textbf{Ne odpirajte} te pole, dokler ne dobite dovoljenja.
+    \item Zgoraj \textbf{vpišite svoje podatke} in označite \textbf{sedež}.
+    \item Na vidno mesto položite \textbf{dokument s sliko}.
+    \item Preverite, da imate \textbf{telefon izklopljen} in spravljen.
+    \item Čas pisanja je \textbf{180 minut}.
+    \item Doseči je možno \textbf{80 točk}.
+    \item Veliko uspeha!
+  \end{itemize}
+  \vspace{\stretch{3}}
+  \newpage
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\naloga[\tocke{20}]
+V $\lambda$-računu lahko vsako naravno število $n$ predstavimo s \emph{Churchevim naravnim številom}
+\[
+  e_n = \fun{s} \fun{z} \underbrace{s (s (\cdots (s}_n \; z) \cdots))
+\]
+\podnaloga Zapišite vse korake v evalvaciji izraza $(e_2 \; (\fun{n} 2 * n)) \; 1$.
+\podnaloga Napišite funkcijo $f$, ki vsako Churchevo naravno število pretvori v običajno naravno število. Veljati mora torej $f \; e_n \leadsto^* n$.
+\podnaloga Izračunajte najbolj splošen tip izraza $e_2$.
+\nadaljevanje
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\naloga[\tocke{20}]
+Operacijsko semantiko programskega jezika {\imp} z ukazi
+\[
+  c \bnfis
+  \conditional{b}{c_1}{c_2} \bnfor
+  \whileloop{b}{c} \bnfor
+  c_1; c_2 \bnfor
+  \ell := e \bnfor
+  \skp
+\]
+smo običajno podali z velikimi koraki, torej z relacijami
+\[
+  s, e \Downarrow n, \qquad s, b \Downarrow p, \qquad s, c \Downarrow s',
+\]
+vendar bi lahko podobno storili tudi z malimi koraki
+\[
+  s, e \leadsto e', \qquad s, b \leadsto b', \qquad s, c \leadsto s', c'
+\]
+Pri tem aritmetični izrazi s koraki končajo, ko dosežejo število $n$, Booleovi izrazi takrat, ko dosežejo logično vrednost $p$, ukazi pa takrat, ko dosežejo $s, \skp$.
+
+\podnaloga Podajte pravila, ki določajo relacijo $s, c \leadsto s', c'$. Pravil za aritmetične in Booleove izraze vam ni treba podajati.
+
+\newcommand{\interleave}[2]{#1 \leftrightharpoons #2}
+\podnaloga Jezik {\imp} razširimo s prepletenim izvajanjem $\interleave{c_1}{c_2}$, ki najprej izvede en korak ukaza $c_1$, nato en korak ukaza $c_2$, nato naslednji korak ukaza $c_1$ in tako naprej. Če je ukaz, ki je na vrsti, z izvajanjem končal, do konca izvedemo preostali ukaz. Zapišite dodatna pravila, s katerimi morate razširiti operacijsko semantiko.
+\prostor[2]
+
+\nadaljevanje
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\naloga[\tocke{20}]
+\newcommand{\fix}{\mathit{fix}}
+Dana naj bo domena $D$ in naj bo $\fix \colon [D \to D] \to D$ preslikava, ki vsaki zvezni preslikavi $f \colon D \to D$ priredi njeno najmanjšo fiksno točko $\fix(f) \in D$. Dokažite, da je preslikava $\fix$ zvezna.
+
+\nadaljevanje
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\naloga[\tocke{20}]
+\newcommand{\good}[1]{\mathcal{D}_{#1}}
+Imejmo $\lambda$-račun samo z Booleovimi vrednostmi in funkcijami
+\[
+  e \bnfis
+  x \bnfor
+  \tru \bnfor
+  \fls \bnfor
+  \conditional{e}{e_1}{e_2} \bnfor
+  \fun{x}{e} \bnfor
+  e_1 \; e_2
+\]
+ter z običajnimi pravili za neučakano operacijsko semantiko malih korakov in določanje tipov. Ker v jeziku nimamo rekurzije, vsak program, ki ima tip, tudi konvergira, vendar preprosta indukcija žal ne zadošča za dokaz.\footnote{Za čast in slavo lahko poiščete izraz $e$, ki divergira, torej da obstaja neskončno zaporedje
+$e \leadsto e_1 \leadsto e_2 \leadsto \cdots$
+}
+
+
+Namesto tega za vsak tip $A$ definiramo množico \emph{dobrih izrazov}~$\good{A}$ kot
+%
+\begin{align*}
+  \good{\boolty} &=
+    \big\{ e \mid (e \leadsto^* \tru) \lor (e \leadsto^* \fls) \big\} &
+  \good{\funty{A_1}{A_2}} &=
+    \big\{ e \mid \forall e' \in \good{A_1}. e \; e' \in \good{A_2} \big\}
+\end{align*}
+%
+in dokaz razbijemo na tri dele\ldots
+
+\podnaloga
+Dokažite, da vsi dobri izrazi konvergirajo, torej da za vsak tip $A$ in vsak $e \in \good{A}$ obstaja vrednost~$v$, da velja $e \leadsto^* v$.
+
+\podnaloga
+Dokažite, da za vsak tip $A$ iz $e \leadsto e'$ in $e' \in \good{A}$ sledi $e \in \good{A}$.
+
+\podnaloga
+Dokažite, da za vsak izraz $x_1 : A_1, \dots, x_n : A_n \vdash e : A$ in vse vrednosti $v_1 \in \good{A_1}, \dots, v_n \in \good{A_n}$ velja tudi $e[v_1 / x_1, \dots, v_n / x_n] \in \good{A}$. Torej: vsak izraz, ki ima tip, je dober, če vse proste spremenljivke zamenjamo z dobrimi vrednostmi.
+
+\nadaljevanje
+
+
+\izpit
+  [ucilnica=P02,anglescina]{Theory of programming languages: first exam}{31 January 2020}{
+}
+\dodatek{
+  \vspace{\stretch{1}}
+  \begin{itemize}
+    \item \textbf{Do not open} the exam until you are allowed to.
+    \item Enter \textbf{your data} and mark your \textbf{seat}.
+    \item Ensure that you \textbf{display your ID}.
+    \item Ensure that your \textbf{phone is turned off} and stowed away.
+    \item You have \textbf{180 minutes}.
+    \item You can achieve \textbf{80 marks}.
+    \item Good luck!
+  \end{itemize}
+  \vspace{\stretch{3}}
+  \newpage
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\naloga[\tocke{20}]
+In $\lambda$-calculus, each natural number $n$ can be represented by a \emph{Church natural number}
+\[
+  e_n = \fun{s} \fun{z} \underbrace{s (s (\cdots (s}_n \; z) \cdots))
+\]
+\podnaloga Write down all the steps in the evaluation of $(e_2 \; (\fun{n} 2 * n)) \; 1$.
+\podnaloga Write a function $f$, which converts every Church natural number to an ordinary natural number, ie. $f \; e_n \leadsto^* n$ must hold.
+\podnaloga Compute the most general type of the expression $e_2$.
+\nadaljevanje
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\naloga[\tocke{20}]
+Operational semantics of the {\imp} language with commands
+\[
+  c \bnfis
+  \conditional{b}{c_1}{c_2} \bnfor
+  \whileloop{b}{c} \bnfor
+  c_1; c_2 \bnfor
+  \ell := e \bnfor
+  \skp
+\]
+is usually given with big steps, ie. with relations
+\[
+  s, e \Downarrow n, \qquad s, b \Downarrow p, \qquad s, c \Downarrow s',
+\]
+though we could do the same with small steps
+\[
+  s, e \leadsto e', \qquad s, b \leadsto b', \qquad s, c \leadsto s', c'
+\]
+In this case, arithmetic expressions end evaluation when they reach a number $n$, Boolean expressions when they reach a truth value $p$, and the commands when they reach $s, \skp$.
+
+\podnaloga Give the rules that determine the relation $s, c \leadsto s', c'$. You do not need to give the rules for arithmetic and Boolean expressions.
+
+\podnaloga We extend {\imp} with interleaving $\interleave{c_1}{c_2}$, which first executes one step of $c_1$, then one step of $c_2$, then the next step of $c_1$ and so on. If the command in turn has finished the execution, we evaluate the remaining command. Write the additional rules with which you need to extend the operational semantics.
+\prostor[2]
+
+\nadaljevanje
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\naloga[\tocke{20}]
+Let $D$ be a domain and let $\fix \colon [D \to D] \to D$ map each continuous function $f \colon D \to D$ into its least fixed point $\fix(f) \in D$. Prove that $\fix$ is continuous.
+
+\nadaljevanje
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\naloga[\tocke{20}]
+Take $\lambda$-calculus with booleans and functions
+\[
+  e \bnfis
+  x \bnfor
+  \tru \bnfor
+  \fls \bnfor
+  \conditional{e}{e_1}{e_2} \bnfor
+  \fun{x}{e} \bnfor
+  e_1 \; e_2
+\]
+and usual rules for eager small-step operational semantics and typing judgements. Since the language does not feature recursion, each well-typed expression converges, though simple induction is not sufficient for the proof,.\footnote{For honor and glory you can find an expression $e$, which diverges, ie. there exists an infinite sequence $e \leadsto e_1 \leadsto e_2 \leadsto \cdots$
+}
+
+
+Instead, we define a set of \emph{good expressions}~$\good{A}$ for each type $A$ as
+%
+\begin{align*}
+  \good{\boolty} &=
+    \big\{ e \mid (e \leadsto^* \tru) \lor (e \leadsto^* \fls) \big\} &
+  \good{\funty{A_1}{A_2}} &=
+    \big\{ e \mid \forall e' \in \good{A_1}. e \; e' \in \good{A_2} \big\}
+\end{align*}
+%
+and split the proof into three parts\ldots
+
+\podnaloga
+Prove that all good expressions converge, ie. for each type $A$ and each $e \in \good{A}$ there exists a value~$v$, such that $e \leadsto^* v$.
+
+\podnaloga
+Prove that $e \leadsto e'$ and $e' \in \good{A}$ imply $e \in \good{A}$ for each type $A$.
+
+\podnaloga
+Prove that for each expression $x_1 : A_1, \dots, x_n : A_n \vdash e : A$ and all values $v_1 \in \good{A_1}, \dots, v_n \in \good{A_n}$ we have $e[v_1 / x_1, \dots, v_n / x_n] \in \good{A}$. Ie. each well-typed expression is good, if we replace all free variables with good values.
+
+\nadaljevanje
+
+\end{document}

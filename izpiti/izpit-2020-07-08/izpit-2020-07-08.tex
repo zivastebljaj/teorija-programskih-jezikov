@@ -1,0 +1,317 @@
+\documentclass[arhiv]{izpit}
+\usepackage{amssymb}
+\usepackage{fouriernc}
+
+\begin{document}
+
+\newcommand{\bnfis}{\mathrel{{:}{:}{=}}}
+\newcommand{\bnfor}{\;\mid\;}
+\newcommand{\fun}[2]{\lambda #1. #2}
+\newcommand{\conditional}[3]{\mathtt{if}\;#1\;\mathtt{then}\;#2\;\mathtt{else}\;#3}
+\newcommand{\whileloop}[2]{\mathtt{while}\;#1\;\mathtt{do}\;#2}
+\newcommand{\recfun}[3]{\mathtt{rec}\;\mathtt{fun}\;#1\;#2. #3}
+\newcommand{\boolty}{\mathtt{bool}}
+\newcommand{\intty}{\mathtt{int}}
+\newcommand{\funty}[2]{#1 \to #2}
+\newcommand{\tru}{\mathtt{true}}
+\newcommand{\fls}{\mathtt{false}}
+\newcommand{\tbool}{\mathtt{bool}}
+\newcommand{\tand}{\mathbin{\mathtt{and}}}
+\newcommand{\tandalso}{\mathbin{\mathtt{andalso}}}
+\newcommand{\imp}{\textsc{imp}}
+\newcommand{\skp}{\mathtt{skip}}
+\makeatletter
+\newcommand{\nadaljevanje}{\dodatek{\newpage\noindent\emph{(\@sloeng{nadaljevanje rešitve \arabic{naloga}. naloge}{continuation of the answer to question \arabic{naloga}})}}}
+\makeatother
+\izpit
+  [ucilnica=202,naloge=-1]{Teorija programskih jezikov: 3. izpit}{8.\ julij 2020}{
+}
+\dodatek{
+  \vspace{\stretch{1}}
+  \begin{itemize}
+    \item \textbf{Ne odpirajte} te pole, dokler ne dobite dovoljenja.
+    \item Zgoraj \textbf{vpišite svoje podatke} in označite \textbf{sedež}.
+    \item Na vidno mesto položite \textbf{dokument s sliko}.
+    \item Preverite, da imate \textbf{telefon izklopljen} in spravljen.
+    \item Čas pisanja je \textbf{180 minut}.
+    \item Doseči je možno \textbf{80 točk}.
+    \item \textbf{Ne kašljajte} v sošolce in asistenta.
+    \item Veliko uspeha!
+  \end{itemize}
+  \vspace{\stretch{3}}
+  \newpage
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\naloga[\tocke{20}]
+\newcommand{\cons}[2]{#1 \mathrel{::} #2}
+\newcommand{\match}[4]{\mathtt{match}\;#1\;\mathtt{with} \; [] \mapsto {#2} \; | \; {#3} \mapsto {#4}}
+
+V $\lambda$-računu, razširjenem s seznami, definirajmo:
+\[
+  \mathit{sum} = \recfun{s}{\ell}{\;\match{\ell}{0}{\cons{h}{t}}{h + s \; t}}
+\]
+\podnaloga Zapišite vsa pravila, ki določajo operacijsko semantiko malih korakov za izraz $\recfun{f}{x}{e}$.
+\podnaloga Zapišite vse korake v evalvaciji izraza $\mathit{sum} \; (\cons{19}{(\cons{23}{[]})})$ v semantiki malih korakov.
+\podnaloga Izračunajte najbolj splošen tip izraza $\mathit{sum}$.
+\nadaljevanje
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\naloga[\tocke{20}]
+
+Naj bo $(D, \leq)$ domena in $x, y \in D$. Pravimo, da je \emph{$x$ daleč pod $y$}, kar označimo z $x \ll y$, kadar vsaka veriga, katere supremum preseže $y$, preseže $x$ že po končno mnogo členih. Torej, če za vsako verigo $w_0 \leq w_1 \leq w_2 \leq \cdots$, za katero velja $y \leq \bigvee_i w_i$, obstaja nek $j$, da velja $x \leq w_j$.
+
+\podnaloga
+Dokažite, da za poljubna $x, y \in D$ iz $x \ll y$ sledi $x \leq y$.
+
+\podnaloga
+Dokažite, da za poljubne $x, y, z \in D$ iz $x \ll y$ in $y \leq z$ sledi $x \ll z$.
+
+\podnaloga
+Dokažite, da za poljubne $x, y, z \in D$ iz $x \leq y$ in $y \ll z$ sledi $x \ll z$.
+
+\podnaloga
+Poiščite primer domene $(D, \leq)$ ter elementa $x \leq y$, za katere \emph{ne velja} $x \ll y$.
+
+\nadaljevanje
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\naloga[\tocke{20}]
+\newcommand{\amb}[2]{#1 \oplus #2}
+V $\lambda$-račun dodamo nedeterministično izvajanje, v katerem se lahko izrazi evalvirajo v več kot eno možno vrednost:
+\[
+  e \bnfis
+  x \bnfor
+  \tru \bnfor
+  \fls \bnfor
+  \conditional{e}{e_1}{e_2} \bnfor
+  \fun{x}{e} \bnfor
+  e_1 \; e_2 \bnfor
+  \amb{e_1}{e_2}
+\]
+
+\podnaloga
+Zapišite pravilo za določitev tipa za izraz $\amb{e_1}{e_2}$, ki se nedeterministično odloči, ali bo nadaljeval kot $e_1$ ali kot $e_2$.
+
+\podnaloga
+Operacijsko semantiko za razširjeni $\lambda$-račun lahko podamo na dva načina. Prvi je, da v semantiko malih korakov dodamo pravili:
+\[
+\frac{
+  \hbox{}
+}{
+  \amb{e_1}{e_2} \leadsto e_1
+}
+\qquad
+\frac{
+  \hbox{}
+}{
+  \amb{e_1}{e_2} \leadsto e_2
+}
+\]
+Drugi pa je semantika velikih korakov oblike $e \Downarrow \{v_1, \dots, v_n\}$, kjer so $v_1, \dots, v_n$ vse možne vrednosti, v katere se lahko evalvira izraz $e$. Zapišite pravila, ki določajo takšno semantiko.
+
+\nadaljevanje
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\naloga[\tocke{20}]
+
+\newcommand{\Funty}[2]{\forall #1. #2}
+\newcommand{\Fun}[2]{\Lambda #1. #2}
+\emph{Polimorfni $\lambda$-račun} oziroma \emph{sistem F} je $\lambda$-račun, razširjen z eksplicitnimi univerzalno kvantificiranimi tipi ter izrazoma za abstrakcijo in aplikacijo tipov. Sintaksa njegovih tipov, izrazov in vrednosti je:
+\begin{align*}
+  A &\bnfis
+  \boolty \bnfor
+  \intty \bnfor
+  \funty{A}{B} \bnfor
+  \alpha \bnfor
+  \Funty{\alpha}{A} \\
+  e &\bnfis
+  \cdots \bnfor
+  \Fun{\alpha}{e} \bnfor
+  e \, A \\
+  v &\bnfis
+  \cdots \bnfor
+  \Fun{\alpha}{e}
+\end{align*}
+pravila za operacijsko semantiko in tipe novih izrazov pa so
+\[
+\frac{
+  e \leadsto e'
+}{
+  e \, A \leadsto e' \, A
+}
+\qquad
+\frac{
+  \hbox{}
+}{
+  (\Fun{\alpha}{e})\,A \leadsto e[A / \alpha]
+}
+\qquad
+\frac{
+  \Gamma, \alpha \vdash e : A
+}{
+  \Gamma \vdash \Fun{\alpha}{e} : \Funty{\alpha}{A}
+}
+\qquad
+\frac{
+  \Gamma \vdash e : \Funty{\alpha}{A}
+}{
+  \Gamma \vdash e \, B : A[B / \alpha]
+}
+\]
+pri čemer lahko konteksti $\Gamma$ vsebujejo tako proste spremenljivke $x : A$ kot proste spremenljivke za tipe $\alpha$. Poleg tega za vsak $\Gamma \vdash e : A$ zahtevamo, da se vse proste spremenljivke $\alpha$ v izrazu~$e$ in tipu~$A$ pojavijo v $\Gamma$.
+
+Dokažite izreka o napredku in ohranitvi za polimorfni $\lambda$-račun.
+
+\nadaljevanje
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\izpit
+  [ucilnica=202,naloge=-1,anglescina]{Theory of programming languages: third exam}{8 July 2020}{
+}
+\dodatek{
+  \vspace{\stretch{1}}
+  \begin{itemize}
+    \item \textbf{Do not open} the exam sheet until given permission.
+    \item Enter \textbf{your details above} and mark your \textbf{seat}.
+    \item Place an \textbf{identification document} in front of you.
+    \item Make sure your \textbf{phone is switched off} and stowed away.
+    \item You have \textbf{180 minutes}.
+    \item You can achieve \textbf{80 points}.
+    \item \textbf{Do not cough} into your schoolmates or the teaching assistant.
+    \item Good luck!
+  \end{itemize}
+  \vspace{\stretch{3}}
+  \newpage
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\naloga[\tocke{20}]
+
+In $\lambda$-calculus extended with lists, we define:
+\[
+  \mathit{sum} = \recfun{s}{\ell}{\;\match{\ell}{0}{\cons{h}{t}}{h + s \; t}}
+\]
+\podnaloga Write down all the rules that specify the small-step operational semantics of the expression $\recfun{f}{x}{e}$.
+\podnaloga Write down all the steps in the evaluation of the expression $\mathit{sum} \; (\cons{19}{(\cons{23}{[]})})$ in the small-step semantics.
+\podnaloga Compute the most general type of the expression $\mathit{sum}$.
+\nadaljevanje
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\naloga[\tocke{20}]
+
+Let $(D, \leq)$ be a domain and let $x, y \in D$. We say that \emph{$x$ is well below $y$}, written as $x \ll y$, when each chain whose supremum exceeds $y$, exceeds $x$ after finitely many elements. In other words, if for any chain $w_0 \leq w_1 \leq w_2 \leq \cdots$ such that $y \leq \bigvee_i w_i$ there exists some $j$ for which $x \leq w_j$.
+
+\podnaloga
+Prove that $x \ll y$ implies $x \leq y$ for arbitrary $x, y \in D$.
+
+\podnaloga
+Prove that $x \ll y$ and $y \leq z$ implies $x \ll z$ for arbitrary $x, y, z \in D$.
+
+\podnaloga
+Prove that $x \leq y$ and $y \ll z$ implies $x \ll z$ for arbitrary $x, y, z \in D$.
+
+\podnaloga
+Find an example of a domain $(D, \leq)$ and elements $x \leq y$ such that $x \ll y$ \emph{does not hold}.
+
+\nadaljevanje
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\naloga[\tocke{20}]
+We extend $\lambda$-calculus with non-deterministic evaluation, where each expression can evaluate to more than one possible value:
+\[
+  e \bnfis
+  x \bnfor
+  \tru \bnfor
+  \fls \bnfor
+  \conditional{e}{e_1}{e_2} \bnfor
+  \fun{x}{e} \bnfor
+  e_1 \; e_2 \bnfor
+  \amb{e_1}{e_2}
+\]
+
+\podnaloga
+Write down the typing rule for the expression $\amb{e_1}{e_2}$, which non-deterministically chooses between proceeding as $e_1$ or as $e_2$.
+
+\podnaloga
+Operational semantics for the extended $\lambda$-calculus can be given in two different ways. The first one is extending small-step semantics with rules:
+\[
+\frac{
+  \hbox{}
+}{
+  \amb{e_1}{e_2} \leadsto e_1
+}
+\qquad
+\frac{
+  \hbox{}
+}{
+  \amb{e_1}{e_2} \leadsto e_2
+}
+\]
+The second one is big step semantics of the form $e \Downarrow \{v_1, \dots, v_n\}$, where $v_1, \dots, v_n$ are all possible values into which $e$ can evaluate. Write down all the rules that define such semantics.
+
+\nadaljevanje
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\naloga[\tocke{20}]
+
+\emph{Polymorphic $\lambda$-calculus} or \emph{system F} is $\lambda$-calculus, extended with explicit universally quantified types and expressions for type abstraction and application. The syntax of its types, expressions, and values is:
+\begin{align*}
+  A &\bnfis
+  \boolty \bnfor
+  \intty \bnfor
+  \funty{A}{B} \bnfor
+  \alpha \bnfor
+  \Funty{\alpha}{A} \\
+  e &\bnfis
+  \cdots \bnfor
+  \Fun{\alpha}{e} \bnfor
+  e \, A \\
+  v &\bnfis
+  \cdots \bnfor
+  \Fun{\alpha}{e}
+\end{align*}
+The additional rules for operational semantics and typing judgements are:
+\[
+\frac{
+  e \leadsto e'
+}{
+  e \, A \leadsto e' \, A
+}
+\qquad
+\frac{
+  \hbox{}
+}{
+  (\Fun{\alpha}{e})\,A \leadsto e[A / \alpha]
+}
+\qquad
+\frac{
+  \Gamma, \alpha \vdash e : A
+}{
+  \Gamma \vdash \Fun{\alpha}{e} : \Funty{\alpha}{A}
+}
+\qquad
+\frac{
+  \Gamma \vdash e : \Funty{\alpha}{A}
+}{
+  \Gamma \vdash e \, B : A[B / \alpha]
+}
+\]
+where the context $\Gamma$ may contain both free variables of the form $x : A$ and free type variables $\alpha$. We additionally require that in each $\Gamma \vdash e : A$ all free type variables $\alpha$ in the expression~$e$ or type~$A$ appear in $\Gamma$.
+
+Prove progress and preservation theorems for polymorphic $\lambda$-calculus.
+
+\nadaljevanje
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{document}

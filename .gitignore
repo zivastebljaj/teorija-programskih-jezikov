@@ -1,6 +1,11 @@
+.DS_Store
+
 _build
-*.byte
-*.native
 *.exe
-*.cmo
-*.cmi
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.synctex.gz
+.merlin
+*.agdai

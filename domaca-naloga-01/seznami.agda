@@ -22,23 +22,23 @@ impApp (Empty A') ys = ys
 impApp (Cons x xs) ys = Cons x (impApp xs ys)
 
 
-data 𝕊 : Set → Set where
-    [] : {A : Set} → 𝕊 A
-    _∷_ : {A : Set} → A → 𝕊 A → 𝕊 A
+data List : Set → Set where
+    [] : {A : Set} → List A
+    _::_ : {A : Set} → A → List A → List A
 
 infixr 15 _++_
-infixr 20 _∷_
+infixr 20 _::_
 
-_++_ : {A : Set} → 𝕊 A → 𝕊 A → 𝕊 A
+_++_ : {A : Set} → List A → List A → List A
 [] ++ ys = ys
-x ∷ xs ++ ys = x ∷ (xs ++ ys)
+x :: xs ++ ys = x :: (xs ++ ys)
 
-map : {A B : Set} → (A → B) → 𝕊 A → 𝕊 B
+map : {A B : Set} → (A → B) → List A → List B
 map f [] = []
-map f (x ∷ xs) = map f xs
+map f (x :: xs) = map f xs
 
 infix 10 _∈_
 
-data _∈_ {A : Set} : A → 𝕊 A → Set where
-    here : {x : A} {xs : 𝕊 A} → x ∈ x ∷ xs
-    there : {x y : A} {xs : 𝕊 A} → x ∈ xs → x ∈ y ∷ xs
+data _∈_ {A : Set} : A → List A → Set where
+    here : {x : A} {xs : List A} → x ∈ x :: xs
+    there : {x y : A} {xs : List A} → x ∈ xs → x ∈ y :: xs

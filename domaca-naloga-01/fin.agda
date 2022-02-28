@@ -1,19 +1,19 @@
 module fin where
 
-open import naravna using (ℕ; S; O; _+_)
+open import naravna using (Nat; suc; zero; _+_)
 
-data Fin : ℕ -> Set where
-    Fo : {n : ℕ} -> Fin (S n)
-    Fs : {n : ℕ} -> Fin n -> Fin (S n)
+data Fin : Nat -> Set where
+    Fo : {n : Nat} -> Fin (suc n)
+    Fs : {n : Nat} -> Fin n -> Fin (suc n)
 
-toℕ : {n : ℕ} → Fin n → ℕ
-toℕ Fo = O
-toℕ (Fs f) = S (toℕ f)
+toNat : {n : Nat} → Fin n → Nat
+toNat Fo = zero
+toNat (Fs f) = suc (toNat f)
 
-fromℕ : (n : ℕ) → Fin (S n)
-fromℕ O = Fo
-fromℕ (S n) = Fs (fromℕ n)
+fromNat : (n : Nat) → Fin (suc n)
+fromNat zero = Fo
+fromNat (suc n) = Fs (fromNat n)
 
-_↑_ : {m : ℕ} → Fin m → ∀ (n : ℕ) → Fin (m + n)
+_↑_ : {m : Nat} → Fin m → ∀ (n : Nat) → Fin (m + n)
 Fo ↑ n = Fo
 Fs m ↑ n = Fs (m ↑ n)
